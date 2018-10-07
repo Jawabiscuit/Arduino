@@ -31,7 +31,10 @@
   - *this step may not be necessary if "ant start" is not executed*
 
 - Set X Display variable
-  - 
+  - export DISPLAY=:0
+
+- Download 32 bit version of JDK 1.8.0_181
+  - point JAVA_HOME to 32-bit (x86) jdk directory
 
 - Run the steps to build on Linux from this page
   - https://github.com/arduino/Arduino/wiki/Building-Arduino
