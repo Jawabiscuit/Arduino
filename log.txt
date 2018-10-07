@@ -44,16 +44,17 @@
 
 - Linux build and start success
 
-- Windows build did not succeed
+- Linux-1.8.7 build (using Ubuntu subsystem)
 
-- Solutions?
+  - Launch on Windows using Xming cannot select port using built from source in the Ubuntu environment
 
-- Just use downloaded Windows IDE
+- Windows build did not succeed... Solutions?
 
-- Cannot select port using Linux IDE 1.8.7 built from source in the Ubuntu environment
+  - Follow directions for setting up Cygwin
+  - Build succeeds in cygwin environment
 
-- Sorta makes sense since I'm in a Windows environment
+- Windows-1.8.7 build (cygwin)
 
-
-
+  - Arduino.exe launches but window disappears
+  - Solution: extract "...build\windows\arduino-1.8.7-windows.zip" to a directory and run
 

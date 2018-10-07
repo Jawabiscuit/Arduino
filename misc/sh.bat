@@ -1,12 +1,12 @@
 @echo off
-title Default Maya2018 Project
+title Arduino Project
 
 rem
 rem  To run this at startup, use this as your shortcut target:
 rem  %windir%\system32\cmd.exe /k q:\Arduino\misc\sh.bat
 rem
 
-set PATH="q:\Arduino\misc";%PATH%
+set PATH="q:\Arduino\misc";"q:\Arduino\build\windows\work";%PATH%
 
 rem Emacs init
 set HOME=%USERPROFILE%
