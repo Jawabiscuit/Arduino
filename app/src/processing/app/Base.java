@@ -45,6 +45,7 @@ import processing.app.debug.TargetBoard;
 import processing.app.debug.TargetPackage;
 import processing.app.debug.TargetPlatform;
 import processing.app.helpers.*;
+import processing.app.helpers.OSUtils;
 import processing.app.helpers.filefilters.OnlyDirs;
 import processing.app.helpers.filefilters.OnlyFilesWithExtension;
 import processing.app.javax.swing.filechooser.FileNameExtensionFilter;
@@ -110,6 +111,8 @@ public class Base {
   //  int editorCount;
   List<Editor> editors = Collections.synchronizedList(new ArrayList<Editor>());
   Editor activeEditor;
+  
+  private static JMenu boardMenu;
 
   // these menus are shared so that the board and serial port selections
   // are the same for all windows (since the board and serial port that are
@@ -921,7 +924,10 @@ public class Base {
       storeSketches();
 
       // This will store the sketch count as zero
+      editor.setVisible(false);
+      //editor.dispose();
       editors.remove(editor);
+
       try {
         Editor.serialMonitor.close();
       } catch (Exception e) {
@@ -932,9 +938,10 @@ public class Base {
       // Save out the current prefs state
       PreferencesData.save();
 
-      // Since this wasn't an actual Quit event, call System.exit()
-      System.exit(0);
-
+      // Since this wasn't an actual Quit event, call System.exit() (not on OSX)
+      if (!OSUtils.isMacOS()) {
+        System.exit(0);
+      }
     } else {
       // More than one editor window open,
       // proceed with closing the current window.
@@ -1308,8 +1315,30 @@ public class Base {
 
   private static String priorPlatformFolder;
   private static boolean newLibraryImported;
+  
+  public void selectTargetBoard(TargetBoard targetBoard) {
+    for (int i = 0; i < boardMenu.getItemCount(); i++) {
+      JMenuItem menuItem = boardMenu.getItem(i);
+      if (!(menuItem instanceof JRadioButtonMenuItem)) {
+        continue;
+      }
+      
+      JRadioButtonMenuItem radioButtonMenuItem = ((JRadioButtonMenuItem) menuItem);
+      if (targetBoard.getName().equals(radioButtonMenuItem.getText())) {
+        radioButtonMenuItem.setSelected(true);
+        break;
+      }
+    }
+    
+    BaseNoGui.selectBoard(targetBoard);
+    filterVisibilityOfSubsequentBoardMenus(boardsCustomMenus, targetBoard, 1);
+  
+    onBoardOrPortChange();
+    rebuildImportMenu(Editor.importMenu);
+    rebuildExamplesMenu(Editor.examplesMenu);
+  }
 
-  public void onBoardOrPortChange() {
+  public synchronized void onBoardOrPortChange() {
     BaseNoGui.onBoardOrPortChange();
 
     // reload keywords when package/platform changes
@@ -1402,7 +1431,7 @@ public class Base {
     boardsCustomMenus = new LinkedList<>();
 
     // The first custom menu is the "Board" selection submenu
-    JMenu boardMenu = new JMenu(tr("Board"));
+    boardMenu = new JMenu(tr("Board"));
     boardMenu.putClientProperty("removeOnWindowDeactivation", true);
     MenuScroller.setScrollerFor(boardMenu).setTopFixedCount(1);
 
@@ -1508,12 +1537,26 @@ public class Base {
     @SuppressWarnings("serial")
     Action action = new AbstractAction(board.getName()) {
       public void actionPerformed(ActionEvent actionevent) {
-        BaseNoGui.selectBoard((TargetBoard) getValue("b"));
-        filterVisibilityOfSubsequentBoardMenus(boardsCustomMenus, (TargetBoard) getValue("b"), 1);
 
-        onBoardOrPortChange();
-        rebuildImportMenu(Editor.importMenu);
-        rebuildExamplesMenu(Editor.examplesMenu);
+        new Thread()
+        {
+            public void run() {
+              if (activeEditor != null && activeEditor.isCompiling()) {
+                  // block until isCompiling becomes false, but aboid blocking the UI
+                  while (activeEditor.isCompiling()) {
+                    try {
+                      Thread.sleep(100);
+                    } catch (InterruptedException e) {}
+                  }
+              }
+
+              BaseNoGui.selectBoard((TargetBoard) getValue("b"));
+              filterVisibilityOfSubsequentBoardMenus(boardsCustomMenus, (TargetBoard) getValue("b"), 1);
+              onBoardOrPortChange();
+              rebuildImportMenu(Editor.importMenu);
+              rebuildExamplesMenu(Editor.examplesMenu);
+            }
+        }.start();
       }
     };
     action.putValue("b", board);
