@@ -1,0 +1,20 @@
+* Arduino
+
+** DONE Setup IDE for assembly language [4/4]
+   CLOSED: [2018-10-07 Sun 11:27]
+  - [X] Get the source code
+  - [X] Latest Sketch.java and Compiler.java now seem to support "s" files
+  - [X] Additional mods may not be necessary
+
+** DONE [[https://github.com/arduino/Arduino/wiki/Building-Arduino][Build Arduino]] [8/8]
+   CLOSED: [2018-10-07 Sun 11:30]
+  - [X] On windows, open Ubuntu subsystem shell
+  - [X] =sudo apt-get update=
+  - [X] =sudo apt-get upgrade=
+  - [X] =sudo apt list --installed=
+  - [X] =sudo apt-get install git make gcc ant openjdk-8-jdk unzip=
+  - [X] Follow build steps for Linux
+  - [X] Build succeeded for Linux dist but not Windows :(
+    - View log.txt for details
+  - [X] For now, just keep using IDE downloaded for Windows it
+    should be able to compile assembly

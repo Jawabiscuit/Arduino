@@ -1,0 +1,56 @@
+
+---------------- Sun, 07 Oct 18: 08:43AM
+
+- Arduino project forked and cloned to local repo
+
+- Project dev environment initial setup
+
+- Build Arduino (Steps and setup for modern windows machines with Ubuntu subsystem installed below)
+
+- Clone Arduino repo and cd into it
+
+- Get url of remote repository
+  - git remote -v
+
+- Checkout ide-1.9.x-beta branch
+
+- Add new remote branch to checkout (I named it the same as the remote branch)
+  - git remote add ide-1.9.x-beta https://github.com/arduino/Arduino.git
+
+- Fetch branch from remote
+  - git fetch ide-1.9.x-beta
+
+- List remote branches
+  - git branch -r
+
+- Find what branch i'm on (should automatically be ide-1.9.x-beta)
+  - git branch
+
+- Install Xming XServer for Windows since the build depends on it
+  - https://sourceforge.net/projects/xming/
+  - *this step may not be necessary if "ant start" is not executed*
+
+- Set X Display variable
+  - 
+
+- Run the steps to build on Linux from this page
+  - https://github.com/arduino/Arduino/wiki/Building-Arduino
+
+- If issues are encountered that need to be fixed
+  - ant clean build start
+
+- Linux build and start success
+
+- Windows build did not succeed
+
+- Solutions?
+
+- Just use downloaded Windows IDE
+
+- Cannot select port using Linux IDE 1.8.7 built from source in the Ubuntu environment
+
+- Sorta makes sense since I'm in a Windows environment
+
+
+
+
